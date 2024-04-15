@@ -1,19 +1,41 @@
 import requests
 import re 
 
-url = 'https://en.wikipedia.org/wiki/Religious_order'
-r = requests.get(url)
-html = r.text
+def FgetLinks(Surl):
+    RRequest = requests.get(Surl)
+    SHTML = RRequest.text
 
-SMainBodyPattern = r'<main id="content" class="mw-body" role="main[\s\S]*?</main>'
+    LMainBody = str(SHTML)
+    LMainBody = re.split('<div id="bodyContent" class="vector-body" aria-labelledby="firstHeading" data-mw-ve-target-container>', LMainBody)
+    LMainBody = re.split('</main>', LMainBody[1])
+    #LMainBody = LMainBody[0].split('<span class="mw-headline" id="References">References</span>')
+    LMainBody = re.split('<span class="mw-headline" id="References">References</span>', LMainBody[0])
 
-SMainBody = str(re.findall(SMainBodyPattern, html))
+    LHyperlinks = re.findall('<a href="\/wiki\/.*?<\/a>', LMainBody[0])
 
-SReferenceListPattern =r'<h2><span class="mw-headline" id="References">References</span>'
+    ##lav en liste med ting der skal fjernes
+    LwrongLinks = []
 
-SAdditionalCitationPattern = r'<table class="box-More_citations_needed plainlinks metadata ambox ambox-content ambox-Refimprove" role="presentation">[\s\S]*?</tbody></table>'
+    for i in LHyperlinks:
+        List =[x for x in i]
+        for j in List:
+            if j == ':':
+                LwrongLinks.append(i)
+                break
+    LHyperlinks = [x for x in LHyperlinks if x not in LwrongLinks]
+    LtitleList = []
+    for i in LHyperlinks:
+        LtitleList.append(re.findall('title=".*?"', i))
+    
+    for i in range(len(LtitleList)):
+        LtitleList[i] = re.findall(r'"([^"]*)"', str(LtitleList[i]))
+        LtitleList[i] = str(LtitleList[i]).replace("'", "")
+        LtitleList[i] = str(LtitleList[i]).replace("[", "")
+        LtitleList[i] = str(LtitleList[i]).replace("]", "")
 
-SMain = str(re.split(SReferenceListPattern, SMainBody, maxsplit=1))
 
-SMain = str(re.split(SAdditionalCitationPattern, SMain))
 
+    print(LtitleList)
+
+    
+FgetLinks('https://en.wikipedia.org/wiki/Wetware_(brain)#Computer_jargon')
