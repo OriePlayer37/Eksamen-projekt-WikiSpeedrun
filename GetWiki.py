@@ -1,11 +1,25 @@
 import requests
 import re 
+from bs4 import BeautifulSoup
 
-def fGetLinks(Surl):
-    rRequest = requests.get(Surl)
-    SHTML = rRequest.text
+def fGetArticle(sLink):
+    if sLink == "random":
+        rurl = requests.get("https://en.wikipedia.org/wiki/Special:Random")
+        bs4Soup = BeautifulSoup(rurl.content, "html.parser")
+        sTitle = bs4Soup.find(class_="firstHeading").text
+        sPage = "https://en.wikipedia.org/wiki/" + sTitle
+        return sPage
+    if isinstance(sLink, list) == True and len(sLink) == 2:
+        lPages = []
+        lPages.append("https://en.wikipedia.org/wiki/" + sLink[0])
+        lPages.append("https://en.wikipedia.org/wiki/" + sLink[1])
+        return lPages
 
-    lMainBody = str(SHTML)
+def fGetLinks(surl):
+    rRequest = requests.get(str(surl))
+    sHTML = rRequest.text
+
+    lMainBody = str(sHTML)
     lMainBody = re.split('<div id="bodyContent" class="vector-body" aria-labelledby="firstHeading" data-mw-ve-target-container>', lMainBody)
     lMainBody = re.split('</main>', lMainBody[1])
     #lMainBody = lMainBody[0].split('<span class="mw-headline" id="References">References</span>')
@@ -14,8 +28,6 @@ def fGetLinks(Surl):
     lHyperLinks = re.findall('<a href="/wiki/.*?</a>', lMainBody[0])
 
     lTitleList, lLinksList = fSortList(lHyperLinks)
-
-    print(lLinksList)
 
 
 def fSortList(lHyperLinks):
