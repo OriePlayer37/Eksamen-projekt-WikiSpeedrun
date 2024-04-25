@@ -2,6 +2,9 @@ import requests
 import re 
 from bs4 import BeautifulSoup
 
+#Funktion som tager en string eller liste af strings som input, og enten giver en tilfældig wikipedia sides URL eller de to links givet i parameteren som URL i en liste.
+#Input: enten stringen "random" eller en liste af to wikipedia URL'er
+#Output: enten en random wikipedia hjemmeside eller de to givne links i en liste
 def fGetArticle(sLink):
     if sLink == "random":
         rurl = requests.get("https://en.wikipedia.org/wiki/Special:Random")
@@ -15,8 +18,11 @@ def fGetArticle(sLink):
         lPages.append("https://en.wikipedia.org/wiki/" + sLink[1])
         return lPages
 
-def fGetLinks(surl):
-    rRequest = requests.get(str(surl))
+#Henter HTML koden for en given Wikipedia side, hvorefter der sorteres alle referencer til links ud af hjemmesiden.
+#Input: URL som string
+#Output: n/a 
+def fGetLinks(sURL):
+    rRequest = requests.get(str(sURL))
     sHTML = rRequest.text
 
     lMainBody = str(sHTML)
@@ -29,9 +35,10 @@ def fGetLinks(surl):
 
     lTitleList, lLinksList = fSortList(lHyperLinks)
 
-
+#Fuktionen sorterer og scraper det givne URL for alle links og titler til links
+#Input: Liste af ikke sorterede links i form af "<a href="/wiki/Titel på side" title="Titel på side">Tekst vist på side</a>"
+#Output er til to lister lTitleList og lLinksList
 def fSortList(lHyperLinks):
-    ##lav en liste med ting der skal fjernes
     lWrongLinks = []
 
     for i in lHyperLinks:
@@ -57,6 +64,8 @@ def fSortList(lHyperLinks):
         lLinksList[i] = re.findall(r'"([^"]*)"', str(lLinksList[i]))
         lLinksList[i] = str(lLinksList[i]).replace("'", "").replace("[", "").replace("]", "")
 
+    print(lTitleList)
+    print(lLinksList)
     return lTitleList, lLinksList
     
     
