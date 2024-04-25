@@ -34,6 +34,7 @@ def fGetLinks(sURL):
     lHyperLinks = re.findall('<a href="/wiki/.*?</a>', lMainBody[0])
 
     lTitleList, lLinksList = fSortList(lHyperLinks)
+    return lTitleList, lLinksList
 
 #Fuktionen sorterer og scraper det givne URL for alle links og titler til links
 #Input: Liste af ikke sorterede links i form af "<a href="/wiki/Titel på side" title="Titel på side">Tekst vist på side</a>"
