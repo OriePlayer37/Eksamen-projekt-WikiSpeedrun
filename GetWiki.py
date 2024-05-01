@@ -37,7 +37,6 @@ def fGetLinks(sURL):
     lMainBody = re.split('</main>', lMainBody[1])
     #lMainBody = lMainBody[0].split('<span class="mw-headline" id="References">References</span>')
     lMainBody = re.split('<span class="mw-headline" id="References">References</span>', lMainBody[0])
-
     lHyperLinks = re.findall('<a href="/wiki/.*?</a>', lMainBody[0])
 
     lTitleList, lLinksList = fSortList(lHyperLinks)
@@ -74,5 +73,4 @@ def fSortList(lHyperLinks):
     return lTitleList, lLinksList
     
     
-fGetLinks('https://en.wikipedia.org/wiki/Wetware_(brain)#Computer_jargon')
-print(str(fGetArticle("random")))
+print(fGetLinks('https://en.wikipedia.org/wiki/Zapadny (rural locality)'))
