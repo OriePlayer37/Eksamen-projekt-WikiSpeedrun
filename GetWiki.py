@@ -17,6 +17,8 @@ def fGetArticle(sLink):
         lPages.append("https://en.wikipedia.org/wiki/" + sLink[0])
         lPages.append("https://en.wikipedia.org/wiki/" + sLink[1])
         return lPages
+    else:
+        return "Parameter not supported, use either 'random' or a list of article names"
 
 #Henter HTML koden for en given Wikipedia side, hvorefter der sorteres alle referencer til links ud af hjemmesiden.
 #Input: URL som string
