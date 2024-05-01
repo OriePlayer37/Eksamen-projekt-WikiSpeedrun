@@ -4,21 +4,26 @@ from bs4 import BeautifulSoup
 
 #Funktion som tager en string eller liste af strings som input, og enten giver en tilfældig wikipedia sides URL eller de to links givet i parameteren som URL i en liste.
 #Input: enten stringen "random" eller en liste af to wikipedia URL'er
-#Output: enten en random wikipedia hjemmeside eller de to givne links i en liste
+#Output: enten en liste af to tilfældige wikipedia sider eller de to givne links i en liste
 def fGetArticle(sLink):
     if sLink == "random":
-        rurl = requests.get("https://en.wikipedia.org/wiki/Special:Random")
-        bs4Soup = BeautifulSoup(rurl.content, "html.parser")
-        sTitle = bs4Soup.find(class_="firstHeading").text
-        sPage = "https://en.wikipedia.org/wiki/" + sTitle
-        return sPage
+        lPages = []
+        for i in range(2):
+            rURL = requests.get("https://en.wikipedia.org/wiki/Special:Random")
+            bs4Soup = BeautifulSoup(rURL.content, "html.parser")
+            sTitle = bs4Soup.find(class_="firstHeading").text
+            sPage = "https://en.wikipedia.org/wiki/" + sTitle
+            lPages.append(sPage)
+        return lPages
+    
     if isinstance(sLink, list) == True and len(sLink) == 2:
         lPages = []
-        lPages.append("https://en.wikipedia.org/wiki/" + sLink[0])
-        lPages.append("https://en.wikipedia.org/wiki/" + sLink[1])
+        lPages.append(sLink[0])
+        lPages.append(sLink[1])
         return lPages
+    
     else:
-        return "Parameter not supported, use either 'random' or a list of two article names"
+        return 'Parameter not recognised, use either "random" or a list of two article links'
 
 #Henter HTML koden for en given Wikipedia side, hvorefter der sorteres alle referencer til links ud af hjemmesiden.
 #Input: URL som string
@@ -66,10 +71,8 @@ def fSortList(lHyperLinks):
         lTitleList[i] = str(lTitleList[i]).replace("'", "").replace("[", "").replace("]", "")
         lLinksList[i] = re.findall(r'"([^"]*)"', str(lLinksList[i]))
         lLinksList[i] = str(lLinksList[i]).replace("'", "").replace("[", "").replace("]", "")
-
-    print(lTitleList)
-    print(lLinksList)
     return lTitleList, lLinksList
     
     
 fGetLinks('https://en.wikipedia.org/wiki/Wetware_(brain)#Computer_jargon')
+print(str(fGetArticle("random")))
