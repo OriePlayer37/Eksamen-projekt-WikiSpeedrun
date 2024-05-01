@@ -71,6 +71,3 @@ def fSortList(lHyperLinks):
         lLinksList[i] = re.findall(r'"([^"]*)"', str(lLinksList[i]))
         lLinksList[i] = str(lLinksList[i]).replace("'", "").replace("[", "").replace("]", "")
     return lTitleList, lLinksList
-    
-    
-print(fGetLinks('https://en.wikipedia.org/wiki/Zapadny (rural locality)'))
