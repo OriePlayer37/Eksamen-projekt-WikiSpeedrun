@@ -6,12 +6,28 @@ from bs4 import BeautifulSoup
 #Input: enten stringen "random" eller en liste af to wikipedia URL'er
 #Output: enten en random wikipedia hjemmeside eller de to givne links i en liste
 def fGetArticle(sLink):
+<<<<<<< Updated upstream
     if sLink == "random":
         rurl = requests.get("https://en.wikipedia.org/wiki/Special:Random")
         bs4Soup = BeautifulSoup(rurl.content, "html.parser")
         sTitle = bs4Soup.find(class_="firstHeading").text
         sPage = "https://en.wikipedia.org/wiki/" + sTitle
         return sPage
+=======
+    
+    if isinstance(sLink,str) == True and sLink.lower() == "random":
+        lPages = []
+        lTitle = []
+        for i in range(2):
+            rURL = requests.get("https://en.wikipedia.org/wiki/Special:Random")
+            bs4Soup = BeautifulSoup(rURL.content, "html.parser")
+            sTitle = bs4Soup.find(class_="firstHeading").text
+            sPage = "https://en.wikipedia.org/wiki/" + sTitle
+            lPages.append(sPage)
+            lTitle.append(sTitle)
+        return lPages, lTitle
+    
+>>>>>>> Stashed changes
     if isinstance(sLink, list) == True and len(sLink) == 2:
         lPages = []
         lPages.append("https://en.wikipedia.org/wiki/" + sLink[0])
@@ -65,7 +81,10 @@ def fSortList(lHyperLinks):
         lLinksList[i] = re.findall(r'"([^"]*)"', str(lLinksList[i]))
         lLinksList[i] = str(lLinksList[i]).replace("'", "").replace("[", "").replace("]", "")
 
+<<<<<<< Updated upstream
     return lTitleList, lLinksList
     
     
 fGetLinks('https://en.wikipedia.org/wiki/Wetware_(brain)#Computer_jargon')
+=======
+>>>>>>> Stashed changes

@@ -2,10 +2,32 @@ import GetWiki
 
 import random
 import string
-startlink = "/wiki/Wetware_(brain)#Computer_jargon"
-start = "start"
-slutlink = "/wiki/Computer_hardware"
-slut = "slut"
+startlink = ""
+start = ""
+slutlink = ""
+slut = ""
+def start():
+    var1,var2 = GetWiki.fGetArticle(['https://en.wikipedia.org/wiki/Deccan_Plateau','https://en.wikipedia.org/wiki/South_India'])
+    global start
+    global slut
+    startlink = var1[0] 
+    start = var2[0] 
+    slutlink = var1[1]
+    slut = var2[1]
+    print(var1)
+    print(var2)
+
+def start2():
+    var1,var2 = GetWiki.fGetArticle(['https://en.wikipedia.org/wiki/Deccan_Plateau','https://en.wikipedia.org/wiki/South_India'])
+    global start
+    global slut
+    startlink = var1 
+    start = var1
+    slutlink = var2
+    slut = var2
+    print(var1)
+    print(var2)
+
 Datashow = []
 Datalink = []
 desplaycout = -1
@@ -31,5 +53,6 @@ def userprinter():
         else:
             opdatedata(templink[int(userInput)])
             userprinter()
+start2()
 opdatedata(startlink)
 userprinter()
