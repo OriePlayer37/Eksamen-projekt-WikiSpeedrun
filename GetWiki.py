@@ -21,10 +21,7 @@ def fGetArticle(sLink):
     if isinstance(sLink, list) == True and len(sLink) == 2:
         sLinkTitle = []
         for i in range(2):
-            rURL = requests.get(sLink[i])
-            bs4Soup = BeautifulSoup(rURL.content, "html.parser")
-            sTitle = bs4Soup.find(class_="firstHeading").text
-            sLinkTitle.append(str(sTitle))
+            sLinkTitle.append(sLink[i].split("wiki/")[1].replace("_", " "))
         return sLink, sLinkTitle
     
     else:
@@ -81,5 +78,4 @@ def fSortList(lHyperLinks):
     return lTitleList, lLinksList
     
     
-fGetLinks('https://en.wikipedia.org/wiki/Wetware_(brain)#Computer_jargon')
- 
+print(fGetArticle(['https://en.wikipedia.org/wiki/Deccan_Plateau','https://en.wikipedia.org/wiki/South_India']))
