@@ -14,17 +14,21 @@ Datalink = []
 desplaycout = -1
 
 def MM():   #mainmenu
+    global brugervalg
     os.system('cls||clear')
     print("vekommen til hovdemenuen")
     print("(1) start et nyt spil")
     print("(2) set start og slut sider, og start derefter et spil")
+    print("(3) se brugervalg fra siste spil")
     print("(Q) luk ned")
     userInput = input()
     if userInput == "1":
+        brugervalg = []
         startrandom()
         opdatedata(startlink)
         userprinter()
     if userInput == "2":
+        brugervalg = []
         print("vilken side vil du starte på?")
         link1 = input()
         print("vilken side vil du slutte på?")
@@ -32,6 +36,10 @@ def MM():   #mainmenu
         start(link1,link2)
         opdatedata(startlink)
         userprinter()
+    if userInput == "3":
+        print(brugervalg)
+        input("har du set dem?")
+        MM()
     if userInput == "q" or userInput == "Q":
         exit()
 
@@ -40,20 +48,24 @@ def start(link1, link2):
     var1,var2 = GetWiki.fGetArticle([link1,link2])
     global start
     global slut
+    global brugervalg
     startlink = var1[0] 
     start = var2[0] 
     slutlink = var1[1]
     slut = var2[1]
+    brugervalg.append(str("startede her: " + start))
 
 def startrandom():
     Timer.funcStartTimer()
     var1,var2 = GetWiki.fGetArticle("random")
     global start
     global slut
+    global brugervalg
     startlink = var1[0] 
     start = var2[0] 
     slutlink = var1[1]
     slut = var2[1]
+    brugervalg.append(str("startede her " + start))
 
 def opdatedata(nestedata):
     var1, var2 = GetWiki.fGetLinks('https://en.wikipedia.org'+nestedata)
@@ -75,6 +87,7 @@ def userprinter():
         MM()
     if int(userInput) <= int(i) and int(userInput) >= 0:
         templink = Datalink[desplaycout]
+        brugervalg.append(temp[int(userInput)])
         if str(templink[int(userInput)]) == str(slutlink):
             print("u won!!")
             print("din tid er " + Timer.funcStopTimer())
