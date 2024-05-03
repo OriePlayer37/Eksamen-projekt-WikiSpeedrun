@@ -1,5 +1,6 @@
 import GetWiki
 
+import os
 import random
 import string
 startlink = ""
@@ -14,8 +15,8 @@ def start():
     start = var2[0] 
     slutlink = var1[1]
     slut = var2[1]
-    print(var1)
-    print(var2)
+#    print(var1)
+#    print(var2)
 
 def start2():
     var1,var2 = GetWiki.fGetArticle(['https://en.wikipedia.org/wiki/Deccan_Plateau','https://en.wikipedia.org/wiki/South_India'])
@@ -25,8 +26,8 @@ def start2():
     start = var1
     slutlink = var2
     slut = var2
-    print(var1)
-    print(var2)
+#    print(var1)
+#    print(var2)
 
 Datashow = []
 Datalink = []
@@ -40,6 +41,7 @@ def opdatedata(nestedata):
 def userprinter():
     global desplaycout
     desplaycout = desplaycout + 1
+    os.system('cls||clear')
     print(" ")
     print("start:   " + start + "   slut:   "+ slut)
     for i in range(len(Datashow[desplaycout])):
