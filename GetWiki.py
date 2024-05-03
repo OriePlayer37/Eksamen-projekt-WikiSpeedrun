@@ -6,15 +6,25 @@ from Timer import *
 #Input: enten stringen "random" eller en liste af to wikipedia URL'er
 #Output: enten en liste af to tilfældige wikipedia sider eller de to givne links i en liste
 def fGetArticle(sLink):
-    if sLink.lower() == "random":
+    if sLink == "random":
+        rurl = requests.get("https://en.wikipedia.org/wiki/Special:Random")
+        bs4Soup = BeautifulSoup(rurl.content, "html.parser")
+        sTitle = bs4Soup.find(class_="firstHeading").text
+        sPage = "https://en.wikipedia.org/wiki/" + sTitle
+        return sPage
+ 
+    
+    if isinstance(sLink,str) == True and sLink.lower() == "random":
         lPages = []
+        lTitle = []
         for i in range(2):
             rURL = requests.get("https://en.wikipedia.org/wiki/Special:Random")
             bs4Soup = BeautifulSoup(rURL.content, "html.parser")
             sTitle = bs4Soup.find(class_="firstHeading").text
             sPage = "https://en.wikipedia.org/wiki/" + sTitle
             lPages.append(sPage)
-        return lPages
+            lTitle.append(sTitle)
+        return lPages, lTitle
     
     if isinstance(sLink, list) == True and len(sLink) == 2:
         lPages = []
@@ -74,5 +84,7 @@ def fSortList(lHyperLinks):
         lLinksList[i] = re.findall(r'"([^"]*)"', str(lLinksList[i]))
         lLinksList[i] = str(lLinksList[i]).replace("'", "").replace("[", "").replace("]", "")
     return lTitleList, lLinksList
-
-print(fGetArticle("RaNdOm"))
+    
+    
+fGetLinks('https://en.wikipedia.org/wiki/Wetware_(brain)#Computer_jargon')
+ 
