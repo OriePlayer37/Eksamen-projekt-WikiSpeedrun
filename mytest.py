@@ -7,6 +7,31 @@ startlink = ""
 start = ""
 slutlink = ""
 slut = ""
+Datashow = []
+Datalink = []
+desplaycout = -1
+
+def MM():   #mainmenu
+    global startlink
+    print("vekommen til hovdemenuen")
+    print("(1) start et nyt spil")
+    print("(2) set start og slut sider, og start derefter et spil")
+    print("(Q) luk ned")
+    userInput = input()
+    if userInput == "1":
+        start2()
+        opdatedata(startlink)
+        userprinter()
+    if userInput == "2":
+        print("vilken side vil du starte på?")
+        startlink = input()
+        print("vilken side vil du slutte på?")
+        slutlink = input()
+        opdatedata(startlink)
+        userprinter()
+    if userInput == "q" or userInput == "Q":
+        exit()
+
 def start():
     var1,var2 = GetWiki.fGetArticle(['https://en.wikipedia.org/wiki/Deccan_Plateau','https://en.wikipedia.org/wiki/South_India'])
     global start
@@ -15,8 +40,6 @@ def start():
     start = var2[0] 
     slutlink = var1[1]
     slut = var2[1]
-#    print(var1)
-#    print(var2)
 
 def start2():
     var1,var2 = GetWiki.fGetArticle(['https://en.wikipedia.org/wiki/Deccan_Plateau','https://en.wikipedia.org/wiki/South_India'])
@@ -26,12 +49,6 @@ def start2():
     start = var1
     slutlink = var2
     slut = var2
-#    print(var1)
-#    print(var2)
-
-Datashow = []
-Datalink = []
-desplaycout = -1
 
 def opdatedata(nestedata):
     var1, var2 = GetWiki.fGetLinks('https://en.wikipedia.org'+nestedata)
@@ -52,9 +69,8 @@ def userprinter():
         templink = Datalink[desplaycout]
         if str(templink[int(userInput)]) == str(slutlink):
             print("u won!!")
+            MM()
         else:
             opdatedata(templink[int(userInput)])
             userprinter()
-start2()
-opdatedata(startlink)
-userprinter()
+MM()
