@@ -12,28 +12,29 @@ Datalink = []
 desplaycout = -1
 
 def MM():   #mainmenu
-    global startlink
+    os.system('cls||clear')
     print("vekommen til hovdemenuen")
     print("(1) start et nyt spil")
     print("(2) set start og slut sider, og start derefter et spil")
     print("(Q) luk ned")
     userInput = input()
     if userInput == "1":
-        start()
+        startrandom()
         opdatedata(startlink)
         userprinter()
     if userInput == "2":
         print("vilken side vil du starte på?")
-        startlink = input()
+        link1 = input()
         print("vilken side vil du slutte på?")
-        slutlink = input()
+        link2 = input()
+        start(link1,link2)
         opdatedata(startlink)
         userprinter()
     if userInput == "q" or userInput == "Q":
         exit()
 
-def start():
-    var1,var2 = GetWiki.fGetArticle(['https://en.wikipedia.org/wiki/Deccan_Plateau','https://en.wikipedia.org/wiki/South_India'])
+def start(link1, link2):
+    var1,var2 = GetWiki.fGetArticle([link1,link2])
     global start
     global slut
     startlink = var1[0] 
@@ -41,14 +42,14 @@ def start():
     slutlink = var1[1]
     slut = var2[1]
 
-def start2():
-    var1,var2 = GetWiki.fGetArticle(['https://en.wikipedia.org/wiki/Deccan_Plateau','https://en.wikipedia.org/wiki/South_India'])
+def startrandom():
+    var1,var2 = GetWiki.fGetArticle("random")
     global start
     global slut
-    startlink = var1 
-    start = var1
-    slutlink = var2
-    slut = var2
+    startlink = var1[0] 
+    start = var2[0] 
+    slutlink = var1[1]
+    slut = var2[1]
 
 def opdatedata(nestedata):
     var1, var2 = GetWiki.fGetLinks('https://en.wikipedia.org'+nestedata)
@@ -65,6 +66,8 @@ def userprinter():
         temp = Datashow[desplaycout]
         print(str(i)+":  "+temp[i])
     userInput = input()
+    if userInput == "q" or userInput == "Q":
+        MM()
     if int(userInput) <= int(i) and int(userInput) >= 0:
         templink = Datalink[desplaycout]
         if str(templink[int(userInput)]) == str(slutlink):
