@@ -6,15 +6,7 @@ from Timer import *
 #Input: enten stringen "random" eller en liste af to wikipedia URL'er
 #Output: enten en liste af to tilfældige wikipedia sider eller de to givne links i en liste
 def fGetArticle(sLink):
-    if sLink == "random":
-        rurl = requests.get("https://en.wikipedia.org/wiki/Special:Random")
-        bs4Soup = BeautifulSoup(rurl.content, "html.parser")
-        sTitle = bs4Soup.find(class_="firstHeading").text
-        sPage = "https://en.wikipedia.org/wiki/" + sTitle
-        return sPage
- 
-    
-    if isinstance(sLink,str) == True and sLink.lower() == "random":
+    if isinstance(sLink,str) == True:
         lPages = []
         lTitle = []
         for i in range(2):
@@ -27,10 +19,13 @@ def fGetArticle(sLink):
         return lPages, lTitle
     
     if isinstance(sLink, list) == True and len(sLink) == 2:
-        lPages = []
-        lPages.append(sLink[0])
-        lPages.append(sLink[1])
-        return lPages
+        sLinkTitle = []
+        for i in range(2):
+            rURL = requests.get(sLink[i])
+            bs4Soup = BeautifulSoup(rURL.content, "html.parser")
+            sTitle = bs4Soup.find(class_="firstHeading").text
+            sLinkTitle.append(str(sTitle))
+        return sLink, sLinkTitle
     
     else:
         

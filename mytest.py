@@ -18,15 +18,15 @@ def start():
     print(var2)
 
 def start2():
-    var1,var2 = GetWiki.fGetArticle(['https://en.wikipedia.org/wiki/Deccan_Plateau','https://en.wikipedia.org/wiki/South_India'])
+    var1, var2 = GetWiki.fGetArticle(['https://en.wikipedia.org/wiki/Deccan_Plateau','https://en.wikipedia.org/wiki/South_India'])
     global start
     global slut
-    startlink = var1 
-    start = var1
-    slutlink = var2
-    slut = var2
-    print(var1)
-    print(var2)
+    startlink = var1[0]
+    startTitle = var2[0]
+    slutlink = var1[1]
+    slutTitle = var2[1]
+    print(f"{startlink} \b {startTitle}")
+    print(f"{slutlink} \b {slutTitle}")
 
 Datashow = []
 Datalink = []
@@ -36,6 +36,8 @@ def opdatedata(nestedata):
     var1, var2 = GetWiki.fGetLinks('https://en.wikipedia.org'+nestedata)
     Datashow.append(var1)
     Datalink.append(var2)
+    print(Datashow)
+    print(Datalink)
 
 def userprinter():
     global desplaycout
@@ -54,5 +56,4 @@ def userprinter():
             opdatedata(templink[int(userInput)])
             userprinter()
 start2()
-opdatedata(startlink)
-userprinter()
+
