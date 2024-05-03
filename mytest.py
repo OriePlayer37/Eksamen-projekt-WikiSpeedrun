@@ -25,16 +25,15 @@ def MM():   #mainmenu
     if userInput == "1":
         brugervalg = []
         startrandom()
-        opdatedata(startlink)
         userprinter()
     if userInput == "2":
         brugervalg = []
         print("vilken side vil du starte på?")
-        link1 = input()
+        link1 = str(input())
         print("vilken side vil du slutte på?")
-        link2 = input()
+        link2 = str(input()) 
         start(link1,link2)
-        opdatedata(startlink)
+        print("printer startlink: "+startlink)
         userprinter()
     if userInput == "3":
         print(brugervalg)
@@ -46,6 +45,8 @@ def MM():   #mainmenu
 def start(link1, link2):
     Timer.funcStartTimer()
     var1,var2 = GetWiki.fGetArticle([link1,link2])
+    global startlink
+    global slutlink
     global start
     global slut
     global brugervalg
@@ -54,10 +55,15 @@ def start(link1, link2):
     slutlink = var1[1]
     slut = var2[1]
     brugervalg.append(str("startede her: " + start))
+    var1, var2 = GetWiki.fGetLinks(startlink)
+    Datashow.append(var1)
+    Datalink.append(var2)
 
 def startrandom():
     Timer.funcStartTimer()
     var1,var2 = GetWiki.fGetArticle("random")
+    global startlink
+    global slutlink
     global start
     global slut
     global brugervalg
@@ -66,6 +72,9 @@ def startrandom():
     slutlink = var1[1]
     slut = var2[1]
     brugervalg.append(str("startede her " + start))
+    var1, var2 = GetWiki.fGetLinks(startlink)
+    Datashow.append(var1)
+    Datalink.append(var2)
 
 def opdatedata(nestedata):
     var1, var2 = GetWiki.fGetLinks('https://en.wikipedia.org'+nestedata)
