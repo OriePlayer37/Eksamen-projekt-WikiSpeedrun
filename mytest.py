@@ -25,8 +25,8 @@ def start2():
     startTitle = var2[0]
     slutlink = var1[1]
     slutTitle = var2[1]
-    print(f"{startlink} \b {startTitle}")
-    print(f"{slutlink} \b {slutTitle}")
+    print(f"{startlink} \t {startTitle}")
+    print(f"{slutlink} \t {slutTitle}")
 
 Datashow = []
 Datalink = []
