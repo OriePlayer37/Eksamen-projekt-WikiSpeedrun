@@ -1,8 +1,10 @@
 import GetWiki
+import Timer
 
 import os
 import random
 import string
+
 startlink = ""
 start = ""
 slutlink = ""
@@ -34,6 +36,7 @@ def MM():   #mainmenu
         exit()
 
 def start(link1, link2):
+    Timer.funcStartTimer()
     var1,var2 = GetWiki.fGetArticle([link1,link2])
     global start
     global slut
@@ -43,6 +46,7 @@ def start(link1, link2):
     slut = var2[1]
 
 def startrandom():
+    Timer.funcStartTimer()
     var1,var2 = GetWiki.fGetArticle("random")
     global start
     global slut
@@ -60,6 +64,7 @@ def userprinter():
     global desplaycout
     desplaycout = desplaycout + 1
     os.system('cls||clear')
+    print("din nuværne tid er "+ str(Timer.funcStopTimer()))
     print(" ")
     print("start:   " + start + "   slut:   "+ slut)
     for i in range(len(Datashow[desplaycout])):
@@ -72,6 +77,7 @@ def userprinter():
         templink = Datalink[desplaycout]
         if str(templink[int(userInput)]) == str(slutlink):
             print("u won!!")
+            print("din tid er " + Timer.funcStopTimer())
             MM()
         else:
             opdatedata(templink[int(userInput)])
