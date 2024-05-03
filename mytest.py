@@ -19,7 +19,7 @@ def MM():   #mainmenu
     print("(Q) luk ned")
     userInput = input()
     if userInput == "1":
-        start2()
+        start()
         opdatedata(startlink)
         userprinter()
     if userInput == "2":
