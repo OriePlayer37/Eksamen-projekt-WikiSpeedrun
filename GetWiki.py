@@ -1,19 +1,28 @@
 import requests
 import re 
 from bs4 import BeautifulSoup
+import random
 
 #Funktion som tager en string eller liste af strings som input, og enten giver en tilfældig wikipedia sides URL eller de to links givet i parameteren som URL i en liste.
 #Input: enten stringen "random" eller en liste af to wikipedia URL'er
 #Output: enten en liste af to tilfældige wikipedia sider eller de to givne links i en liste
-def fGetArticle(lLinks):
-    if isinstance(lLinks,str) == True:
+def fGetArticleInfo(lLinks, iIterations = None):
+    if isinstance(lLinks,str) == True and lLinks.lower() == "connected":
+        sPage, sTitle = fGetPageTitle("https://en.wikipedia.org/wiki/Special:Random")
+        lSiteLinks = fGetLinks(sPage)[0]
+        for i in range(iIterations):
+                sChosenSite = random.choice(lSiteLinks)
+                lLinks = fGetLinks(f"https://en.wikipedia.org{sChosenSite}")[0]
+                lSiteLinks = lLinks
+        lLinksList = [sPage, f"https://en.wikipedia.org{sChosenSite}"]
+        lTitleList = [sTitle, fGetPageTitle(f"https://en.wikipedia.org{sChosenSite}")[1]]
+        return lLinksList, lTitleList
+
+    if isinstance(lLinks,str) == True and lLinks.lower() == "random":
         lLinksList = []
         lTitle = []
         for i in range(2):
-            rURL = requests.get("https://en.wikipedia.org/wiki/Special:Random")
-            bs4Soup = BeautifulSoup(rURL.content, "html.parser")
-            sTitle = bs4Soup.find(class_="firstHeading").text
-            sPage = "https://en.wikipedia.org/wiki/" + sTitle
+            sPage, sTitle = fGetPageTitle("https://en.wikipedia.org/wiki/Special:Random")
             lLinksList.append(sPage)
             lTitle.append(sTitle)
         return lLinksList, lTitle
@@ -23,7 +32,7 @@ def fGetArticle(lLinks):
         for i in range(2):
            lLinkTitles.append(lLinks[i].split("wiki/")[1].replace("_", " "))
         return lLinks,lLinkTitles
-    
+
     else:        
         return 'Parameter not recognised, use either "random" or a list of two article links'
     
@@ -75,3 +84,12 @@ def fSortList(lHyperLinks):
         lLinksList[i] = re.findall(r'"([^"]*)"', str(lLinksList[i]))
         lLinksList[i] = str(lLinksList[i]).replace("'", "").replace("[", "").replace("]", "")
     return lLinksList, lTitleList
+
+def fGetPageTitle(sURL):
+    rURL = requests.get(sURL)
+    bs4Soup = BeautifulSoup(rURL.content, "html.parser")
+    sTitle = bs4Soup.find(class_="firstHeading").text
+    sPage = f"https://en.wikipedia.org/wiki/{sTitle}"
+    return sPage, sTitle
+
+print(fGetArticleInfo("connected",2))
