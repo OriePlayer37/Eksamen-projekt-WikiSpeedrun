@@ -1,31 +1,30 @@
 import requests
 import re 
 from bs4 import BeautifulSoup
-from Timer import *
+
 #Funktion som tager en string eller liste af strings som input, og enten giver en tilfældig wikipedia sides URL eller de to links givet i parameteren som URL i en liste.
 #Input: enten stringen "random" eller en liste af to wikipedia URL'er
 #Output: enten en liste af to tilfældige wikipedia sider eller de to givne links i en liste
-def fGetArticle(sLink):
-    if isinstance(sLink,str) == True:
-        lPages = []
+def fGetArticle(lLinks):
+    if isinstance(lLinks,str) == True:
+        lLinksList = []
         lTitle = []
         for i in range(2):
             rURL = requests.get("https://en.wikipedia.org/wiki/Special:Random")
             bs4Soup = BeautifulSoup(rURL.content, "html.parser")
             sTitle = bs4Soup.find(class_="firstHeading").text
             sPage = "https://en.wikipedia.org/wiki/" + sTitle
-            lPages.append(sPage)
+            lLinksList.append(sPage)
             lTitle.append(sTitle)
-        return lPages, lTitle
+        return lLinksList, lTitle
     
-    if isinstance(sLink, list) == True and len(sLink) == 2:
-        sLinkTitle = []
+    if isinstance(lLinks, list) == True and len(lLinks) == 2:
+        lLinkTitles = []
         for i in range(2):
-            sLinkTitle.append(sLink[i].split("wiki/")[1].replace("_", " "))
-        return sLink, sLinkTitle
+           lLinkTitles.append(lLinks[i].split("wiki/")[1].replace("_", " "))
+        return lLinks,lLinkTitles
     
-    else:
-        
+    else:        
         return 'Parameter not recognised, use either "random" or a list of two article links'
     
     
@@ -44,8 +43,10 @@ def fGetLinks(sURL):
     lMainBody = re.split('<span class="mw-headline" id="References">References</span>', lMainBody[0])
     lHyperLinks = re.findall('<a href="/wiki/.*?</a>', lMainBody[0])
 
-    lTitleList, lLinksList = fSortList(lHyperLinks)
-    return lTitleList, lLinksList
+    lLinksList, lTitleList = fSortList(lHyperLinks)
+    lLinksList = [i for n, i in enumerate(lLinksList) if i not in lLinksList[:n]]
+    lTitleList = [i for n, i in enumerate(lTitleList) if i not in lTitleList[:n]]
+    return lLinksList, lTitleList
 
 #Fuktionen sorterer og scraper det givne URL for alle links og titler til links
 #Input: Liste af ikke sorterede links i form af "<a href="/wiki/Titel på side" title="Titel på side">Tekst vist på side</a>"
@@ -68,14 +69,9 @@ def fSortList(lHyperLinks):
         lTitleList.append(re.findall('title=".*?"', i))
         lLinksList.append(re.findall('href=".*?"', i))
 
-
-    
     for i in range(len(lTitleList)):
         lTitleList[i] = re.findall(r'"([^"]*)"', str(lTitleList[i]))
         lTitleList[i] = str(lTitleList[i]).replace("'", "").replace("[", "").replace("]", "")
         lLinksList[i] = re.findall(r'"([^"]*)"', str(lLinksList[i]))
         lLinksList[i] = str(lLinksList[i]).replace("'", "").replace("[", "").replace("]", "")
-    return lTitleList, lLinksList
-    
-    
-print(fGetArticle(['https://en.wikipedia.org/wiki/Deccan_Plateau','https://en.wikipedia.org/wiki/South_India']))
+    return lLinksList, lTitleList
