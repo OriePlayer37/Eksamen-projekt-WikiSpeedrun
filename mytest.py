@@ -32,7 +32,7 @@ def MM():   #mainmenu
         link1 = str(input())
         print("vilken side vil du slutte på?")
         link2 = str(input()) 
-        start(link1,link2)
+        startfung(link1,link2)
         print("printer startlink: "+startlink)
         userprinter()
     if userInput == "3":
@@ -42,9 +42,9 @@ def MM():   #mainmenu
     if userInput == "q" or userInput == "Q":
         exit()
 
-def start(link1, link2):
+def startfung(link1, link2):
     Timer.funcStartTimer()
-    var1,var2 = GetWiki.fGetArticle([link1,link2])
+    var1,var2 = GetWiki.fGetArticleInfo([link1,link2])
     global startlink
     global slutlink
     global start
@@ -61,7 +61,7 @@ def start(link1, link2):
 
 def startrandom():
     Timer.funcStartTimer()
-    var1,var2 = GetWiki.fGetArticle("random")
+    var1,var2 = GetWiki.fGetArticleInfo("random")
     global startlink
     global slutlink
     global start
