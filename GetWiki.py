@@ -70,11 +70,9 @@ def fSortList(siteReferences):
     falseSiteReferences = []
 
     for i in siteReferences:
-        #List =[x for x in i]
-        #for j in List:
-            if ':' in i:
-                falseSiteReferences.append(i)
-                continue
+        if ':' in i:
+            falseSiteReferences.append(i)
+            continue
 
     siteReferences = [x for x in siteReferences if x not in falseSiteReferences]
 
@@ -85,14 +83,14 @@ def fSortList(siteReferences):
         titleOfReferences.append(re.findall('title=".*?"', i))
         linkForReferences.append(re.findall('href=".*?"', i))
 
+    linkForReferences = [i for n, i in enumerate(linkForReferences) if i not in linkForReferences[:n]]
+    titleOfReferences = [i for n, i in enumerate(titleOfReferences) if i not in titleOfReferences[:n]]
+
     for i in range(len(titleOfReferences)):
         titleOfReferences[i] = re.findall(r'"([^"]*)"', str(titleOfReferences[i]))
         titleOfReferences[i] = str(titleOfReferences[i]).replace("'", "").replace("[", "").replace("]", "")
         linkForReferences[i] = re.findall(r'"([^"]*)"', str(linkForReferences[i]))
         linkForReferences[i] = str(linkForReferences[i]).replace("'", "").replace("[", "").replace("]", "")
-
-    linkForReferences = [i for n, i in enumerate(linkForReferences) if i not in linkForReferences[:n]]
-    titleOfReferences = [i for n, i in enumerate(titleOfReferences) if i not in titleOfReferences[:n]]
 
     return linkForReferences, titleOfReferences
 
@@ -104,5 +102,3 @@ def fGetPageTitle(URL):
     bs4Soup = BeautifulSoup(pageRequest.content, "html.parser")
     pageTitle = bs4Soup.find(class_="firstHeading").text
     return pageRequest.url, pageTitle
-
-fGetLinks('https://en.wikipedia.org/wiki/Zodarion_nigriceps')
