@@ -1,4 +1,4 @@
-import GitWiki
+import GetWiki
 
 Datashow = []
 Datalink = []
