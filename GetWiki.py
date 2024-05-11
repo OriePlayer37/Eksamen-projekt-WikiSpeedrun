@@ -47,7 +47,7 @@ def fGetArticleInfo(chosenGameMode, iterations = None):
     
     
 
-#Henter HTML koden for en given Wikipedia side, hvorefter der sorteres alle referencer til links ud af hjemmesiden samt alle titlerne på linksne.
+#Henter HTML koden for en given Wikipedia side, hvorefter der sorteres alle referencer til links ud af hjemmesiden samt alle titlerne på linkene.
 #Input: URL som string.
 #Output: Liste af relative links og lister af deres titler.
 def fGetLinks(URL):
