@@ -7,7 +7,7 @@ from urllib.parse import unquote
 #Funktion som tager en string eller liste af strings som input, og enten giver en tilfældig wikipedia sides URL eller de to links givet i parameteren som URL i en liste.
 #Input: enten stringen "connected", "random" eller en liste af to wikipedia URL'er.
 #Output: enten en liste med en tilfældig side og en der er tilsluttet den side med x antal skrift ude, en liste af to tilfældige wikipedia sider eller de to givne links i en liste.
-def fGetArticleInfo(chosenGameMode, iterations = 10):
+def fGetArticleInfo(chosenGameMode, iterations = None):
     
     if isinstance(chosenGameMode,str) == True and chosenGameMode.lower() == "connected":
         pageURL, pageTitle = fGetPageTitle("https://en.wikipedia.org/wiki/Special:Random")
@@ -94,7 +94,7 @@ def fSortList(siteReferences):
 
     return linkForReferences, titleOfReferences
 
-#Sender en request til en side og henter dets titel gennem responsens heading.
+#Sender en request til en side og henter dets titel ved at finde h1 i HTML koden.
 #Input: URL som en string.
 #Output: Linket til siden samt titlen på siden.
 def fGetPageTitle(URL):
