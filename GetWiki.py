@@ -1,81 +1,104 @@
 import requests
 import re 
 from bs4 import BeautifulSoup
-from Timer import *
+import random
+from urllib.parse import unquote
+
 #Funktion som tager en string eller liste af strings som input, og enten giver en tilfældig wikipedia sides URL eller de to links givet i parameteren som URL i en liste.
-#Input: enten stringen "random" eller en liste af to wikipedia URL'er
-#Output: enten en liste af to tilfældige wikipedia sider eller de to givne links i en liste
-def fGetArticle(sLink):
-    if isinstance(sLink,str) == True:
-        lPages = []
-        lTitle = []
-        for i in range(2):
-            rURL = requests.get("https://en.wikipedia.org/wiki/Special:Random")
-            bs4Soup = BeautifulSoup(rURL.content, "html.parser")
-            sTitle = bs4Soup.find(class_="firstHeading").text
-            sPage = "https://en.wikipedia.org/wiki/" + sTitle
-            lPages.append(sPage)
-            lTitle.append(sTitle)
-        return lPages, lTitle
+#Input: enten stringen "connected", "random" eller en liste af to wikipedia URL'er.
+#Output: enten en liste med en tilfældig side og en der er tilsluttet den side med x antal skrift ude, en liste af to tilfældige wikipedia sider eller de to givne links i en liste.
+def fGetArticleInfo(chosenGameMode, iterations = 10):
     
-    if isinstance(sLink, list) == True and len(sLink) == 2:
-        sLinkTitle = []
+    if isinstance(chosenGameMode,str) == True and chosenGameMode.lower() == "connected":
+        pageURL, pageTitle = fGetPageTitle("https://en.wikipedia.org/wiki/Special:Random")
+        currentSiteReferences = fGetLinks(pageURL)[0]
+
+        for i in range(iterations):
+                chosenSite = random.choice(currentSiteReferences)
+                chosenSiteLinks = fGetLinks(f"https://en.wikipedia.org{chosenSite}")[0]
+                currentSiteReferences = chosenSiteLinks
+
+        goalLinksList = [pageURL, f"https://en.wikipedia.org{chosenSite}"]
+        goalTitleList = [pageTitle, fGetPageTitle(f"https://en.wikipedia.org{chosenSite}")[1]]
+        return goalLinksList, goalTitleList
+
+    if isinstance(chosenGameMode,str) == True and chosenGameMode.lower() == "random":
+        goalLinksList = []
+        goalTitleList = []
+
         for i in range(2):
-            sLinkTitle.append(sLink[i].split("wiki/")[1].replace("_", " "))
-        return sLink, sLinkTitle
+            pageURL, pageTitle = fGetPageTitle("https://en.wikipedia.org/wiki/Special:Random")
+            goalLinksList.append(pageURL)
+            goalTitleList.append(pageTitle)
+
+        return goalLinksList, goalTitleList
     
-    else:
-        
+    if isinstance(chosenGameMode, list) == True and len(chosenGameMode) == 2:
+        startAndFinishTitles = []
+
+        for i in range(2):
+           startAndFinishTitles.append(chosenGameMode[i].split("wiki/")[1].replace("_", " "))
+           startAndFinishTitles[i] = unquote(startAndFinishTitles[i])
+
+        return chosenGameMode, startAndFinishTitles
+
+    else:            
         return 'Parameter not recognised, use either "random" or a list of two article links'
     
     
 
-#Henter HTML koden for en given Wikipedia side, hvorefter der sorteres alle referencer til links ud af hjemmesiden.
-#Input: URL som string
-#Output: n/a 
-def fGetLinks(sURL):
-    rRequest = requests.get(str(sURL))
-    sHTML = rRequest.text
+#Henter HTML koden for en given Wikipedia side, hvorefter der sorteres alle referencer til links ud af hjemmesiden samt alle titlerne på linksne.
+#Input: URL som string.
+#Output: Liste af relative links og lister af deres titler.
+def fGetLinks(URL):
+    request = requests.get(str(URL))
+    pageHTML = request.text
 
-    lMainBody = str(sHTML)
-    lMainBody = re.split('<div id="bodyContent" class="vector-body" aria-labelledby="firstHeading" data-mw-ve-target-container>', lMainBody)
-    lMainBody = re.split('</main>', lMainBody[1])
-    #lMainBody = lMainBody[0].split('<span class="mw-headline" id="References">References</span>')
-    lMainBody = re.split('<span class="mw-headline" id="References">References</span>', lMainBody[0])
-    lHyperLinks = re.findall('<a href="/wiki/.*?</a>', lMainBody[0])
+    mainBody = str(pageHTML)
+    mainBody = re.split('<div id="bodyContent" class="vector-body" aria-labelledby="firstHeading" data-mw-ve-target-container>', mainBody)
+    mainBody = re.split('</main>', mainBody[1])
+    mainBody = re.split('<span class="mw-headline" id="References">References</span>', mainBody[0])
+    siteReferences = re.findall('<a href="/wiki/.*?</a>', mainBody[0])
 
-    lTitleList, lLinksList = fSortList(lHyperLinks)
-    return lTitleList, lLinksList
+    linkForReferences, titleOfReferences= fSortList(siteReferences)
+    return linkForReferences, titleOfReferences
 
 #Fuktionen sorterer og scraper det givne URL for alle links og titler til links
-#Input: Liste af ikke sorterede links i form af "<a href="/wiki/Titel på side" title="Titel på side">Tekst vist på side</a>"
-#Output er til to lister lTitleList og lLinksList
-def fSortList(lHyperLinks):
-    lWrongLinks = []
+#Input: Liste af ikke sorterede links i form af "<a href="/wiki/Titel på side" title="Titel på side">Tekst vist på side</a>".
+#Output Liste af links relative links og lister af deres titler.
+def fSortList(siteReferences):
+    falseSiteReferences = []
 
-    for i in lHyperLinks:
-        List =[x for x in i]
-        for j in List:
-            if j == ':':
-                lWrongLinks.append(i)
-                break
-    lHyperLinks = [x for x in lHyperLinks if x not in lWrongLinks]
+    for i in siteReferences:
+        if ':' in i:
+            falseSiteReferences.append(i)
+            continue
 
-    lTitleList = []
-    lLinksList = []
+    siteReferences = [x for x in siteReferences if x not in falseSiteReferences]
 
-    for i in lHyperLinks:
-        lTitleList.append(re.findall('title=".*?"', i))
-        lLinksList.append(re.findall('href=".*?"', i))
+    titleOfReferences = []
+    linkForReferences = []
 
+    for i in siteReferences:
+        titleOfReferences.append(re.findall('title=".*?"', i))
+        linkForReferences.append(re.findall('href=".*?"', i))
 
-    
-    for i in range(len(lTitleList)):
-        lTitleList[i] = re.findall(r'"([^"]*)"', str(lTitleList[i]))
-        lTitleList[i] = str(lTitleList[i]).replace("'", "").replace("[", "").replace("]", "")
-        lLinksList[i] = re.findall(r'"([^"]*)"', str(lLinksList[i]))
-        lLinksList[i] = str(lLinksList[i]).replace("'", "").replace("[", "").replace("]", "")
-    return lTitleList, lLinksList
-    
-    
-print(fGetArticle(['https://en.wikipedia.org/wiki/Deccan_Plateau','https://en.wikipedia.org/wiki/South_India']))
+    linkForReferences = [i for n, i in enumerate(linkForReferences) if i not in linkForReferences[:n]]
+    titleOfReferences = [i for n, i in enumerate(titleOfReferences) if i not in titleOfReferences[:n]]
+
+    for i in range(len(titleOfReferences)):
+        titleOfReferences[i] = re.findall(r'"([^"]*)"', str(titleOfReferences[i]))
+        titleOfReferences[i] = str(titleOfReferences[i]).replace("'", "").replace("[", "").replace("]", "")
+        linkForReferences[i] = re.findall(r'"([^"]*)"', str(linkForReferences[i]))
+        linkForReferences[i] = str(linkForReferences[i]).replace("'", "").replace("[", "").replace("]", "")
+
+    return linkForReferences, titleOfReferences
+
+#Sender en request til en side og henter dets titel gennem responsens heading.
+#Input: URL som en string.
+#Output: Linket til siden samt titlen på siden.
+def fGetPageTitle(URL):
+    pageRequest = requests.get(URL)
+    bs4Soup = BeautifulSoup(pageRequest.content, "html.parser")
+    pageTitle = bs4Soup.find(class_="firstHeading").text
+    return pageRequest.url, pageTitle
