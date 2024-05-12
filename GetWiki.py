@@ -83,10 +83,10 @@ def fSortList(siteReferences):
         titleOfReferences.append(re.findall('title=".*?"', i))
         linkForReferences.append(re.findall('href=".*?"', i))
 
-    linkForReferences = [i for n, i in enumerate(linkForReferences) if i not in linkForReferences[:n]]
-    titleOfReferences = [i for n, i in enumerate(titleOfReferences) if i not in titleOfReferences[:n]]
+    #linkForReferences = [i for n, i in enumerate(linkForReferences) if i not in linkForReferences[:n]]
+    #titleOfReferences = [i for n, i in enumerate(titleOfReferences) if i not in titleOfReferences[:n]]
 
-    print("elementer i Link liste:"+str(len(linkForReferences))+"\n"+ "elementer i titel liste:"+str(len(titleOfReferences)))
+    #print("elementer i Link liste:"+str(len(linkForReferences))+"\n"+ "elementer i titel liste:"+str(len(titleOfReferences)))
 
     for i in range(len(titleOfReferences)):
         linkForReferences[i] = re.findall(r'"([^"]*)"', str(linkForReferences[i]))
