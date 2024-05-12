@@ -36,7 +36,7 @@ def MM():   #mainmenu
         userprinter()
     if userInput == "3":
         brugervalg = []
-        userInput = input("hvor langt skal der være mellem start og slut")
+        userInput = input("hvor langt skal der være mellem start og slut\n")
         startkendt(int(userInput))
         userprinter()
     if userInput == "4":
