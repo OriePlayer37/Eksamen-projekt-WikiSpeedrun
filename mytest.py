@@ -23,7 +23,7 @@ def MM():   #mainmenu
     userInput = input()
     if userInput == "1":
         brugervalg = []
-        startrandom()
+        startfung(0,0,0)
         userprinter()
     if userInput == "2":
         brugervalg = []
@@ -31,25 +31,31 @@ def MM():   #mainmenu
         link1 = str(input())
         print("vilken side vil du slutte på?")
         link2 = str(input()) 
-        startfung(link1,link2)
+        startfung(1,link1,link2)
         print("printer startlink: "+startlink)
         userprinter()
     if userInput == "3":
         brugervalg = []
         userInput = input("hvor langt skal der være mellem start og slut")
-        startkendt(int(userInput))
+        startfung(2, userInput,0)
         userprinter()
     if userInput == "4":
-        print(brugervalg)
+        for i in range(len(brugervalg)):
+            print(brugervalg[i])
         input("har du set dem?")
         MM()
 
     if userInput == "q" or userInput == "Q":
         exit()
 
-def startkendt(len):
+def startfung(type, link1, link2):
     Timer.funcStartTimer()
-    var1,var2 = GetWiki.fGetArticleInfo("connected", len)
+    if type == 0:
+        var1,var2 = GetWiki.fGetArticleInfo("random")
+    if type == 1:
+        var1,var2 = GetWiki.fGetArticleInfo([link1,link2])
+    if type == 2:
+        var1,var2 = GetWiki.fGetArticleInfo("connected", int(link1))
     global startlink
     global slutlink
     global start
@@ -60,40 +66,6 @@ def startkendt(len):
     slutlink = var1[1]
     slut = var2[1]
     brugervalg.append(str("startede her: " + start))
-    var1, var2 = GetWiki.fGetLinks(startlink)
-    Datashow.append(var2)
-    Datalink.append(var1)
-
-def startfung(link1, link2):
-    Timer.funcStartTimer()
-    var1,var2 = GetWiki.fGetArticleInfo([link1,link2])
-    global startlink
-    global slutlink
-    global start
-    global slut
-    global brugervalg
-    startlink = var1[0] 
-    start = var2[0] 
-    slutlink = var1[1]
-    slut = var2[1]
-    brugervalg.append(str("startede her: " + start))
-    var1, var2 = GetWiki.fGetLinks(startlink)
-    Datashow.append(var2)
-    Datalink.append(var1)
-
-def startrandom():
-    Timer.funcStartTimer()
-    var1,var2 = GetWiki.fGetArticleInfo("random")
-    global startlink
-    global slutlink
-    global start
-    global slut
-    global brugervalg
-    startlink = var1[0] 
-    start = var2[0] 
-    slutlink = var1[1]
-    slut = var2[1]
-    brugervalg.append(str("startede her " + start))
     var1, var2 = GetWiki.fGetLinks(startlink)
     Datashow.append(var2)
     Datalink.append(var1)
@@ -107,8 +79,7 @@ def userprinter():
     global desplaycout
     desplaycout = desplaycout + 1
     os.system('cls||clear')
-    print("din nuværne tid er "+ str(Timer.funcStopTimer()))
-    print(" ")
+    print("din nuværne tid er "+ str(Timer.funcStopTimer())+"\n")
     print("start:   " + start + "   slut:   "+ slut)
     for i in range(len(Datashow[desplaycout])):
         temp = Datashow[desplaycout]
