@@ -105,7 +105,3 @@ def fGetPageTitle(URL):
     bs4Soup = BeautifulSoup(pageRequest.content, "html.parser")
     pageTitle = bs4Soup.find(class_="firstHeading").text
     return pageRequest.url, pageTitle
-
-fGetLinks("https://da.wikipedia.org/wiki/special:random")
-#print(fGetPageTitle("https://da.wikipedia.org/wiki/Vulpes"))
-
